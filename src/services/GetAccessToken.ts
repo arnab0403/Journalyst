@@ -19,9 +19,10 @@ const getAccessToken = (req:Request,res:Response)=>{
     // generating the session 
     kc.generateSession(request_token as string,apiSecret as string)
     .then(async(session)=>{
+        console.log(session);
         const accessToken = session.access_token;
         const userId = session.user_id;
-
+        console.log(accessToken,userId);
         // save the user id and access_token in the for future api calls 
         saveUserToken(userId,accessToken); 
         

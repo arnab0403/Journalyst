@@ -72,35 +72,8 @@ npm run start
   - It invalidates the user's access token via the KiteConnect client and removes it from the in-memory token store.
 
 **Important implementation notes / caveats**
-- Token storage is currently in-memory (`src/utility/tokeStore.ts`) as a simple object. This is not persistent and not safe for production. Replace with a proper DB or secure store for multiple-process / multi-instance deployments.
+- Token storage is currently in-memory (`src/utility/tokeStore.ts`) as a simple object. This is not persistent and not safe for production.
 - The server listens on port `3000` (hardcoded in `src/app.ts`). You can change to use `process.env.PORT` if you want configurable ports.
-- The code assumes `kc.getTrades()` returns an array — ensure KiteConnect returns the expected structure or add defensive checks.
+- The code assumes `kc.getTrades()` returns an array —(I imagine because I don't have trades in zerodha unable to verify) ensure KiteConnect returns the expected structure or add defensive checks.
 
-**Project path explanation**
-- `src/app.ts` — Application entrypoint. Sets up Express, routes, and loads `dotenv`.
-- `src/adapter/kiteConnect.ts` — Exports `API_KEY`, `API_SECRET_KEY`, and a configured `KiteConnect` instance (`kc`). Reads `.env`.
-- `src/services/GetAccessToken.ts` — Implements `/redirecturl` handler: exchanges `request_token` for an access token via `kc.generateSession()` and saves it using `saveUserToken`.
-- `src/services/SyncTrades.ts` — Implements `/sync` handler: sets the user's access token on `kc`, fetches trades with `kc.getTrades()`, normalizes them using `tradeNormalizers`, and returns results.
-- `src/normalizer/TradeDataNormalize.ts` and `src/utility/TradeDataNormalize.ts` — Normalizer functions that map broker-specific trade responses into the local `Trade` interface.
-- `src/utility/tokeStore.ts` — In-memory token store functions: `getUserToken`, `saveUserToken`, `removeUserToken`.
-- `src/types/Trade.ts` — TypeScript interface describing normalized trade shape.
 
-**How a typical flow works**
-1. Request `GET /login` -> server redirects to KiteConnect login URL.
-2. User logs in on Kite; Kite redirects back to `/redirecturl?request_token=...`.
-3. `/redirecturl` handler exchanges `request_token` for an access token and stores it under a `user_id`.
-4. Later, a request to `GET /sync` with `user_id` and `broker_name` will retrieve the saved token, set `kc`'s access token, call `kc.getTrades()`, normalize trades and return them.
-
-**Security & next steps**
-- Replace in-memory token store with a persistent secure store.
-- Validate and sanitize all incoming request payloads (e.g., check `user_id`, `broker_name` values and types).
-- Add logging and error handling around all KiteConnect calls.
-- Consider moving port and other configuration to `.env` (e.g., `PORT`) and use `process.env.PORT || 3000`.
-
----
-If you'd like, I can:
-- Commit `README.md` to the repo for you.
-- Add a `.env.example` file and a short Git pre-commit check to prevent committing secrets.
-- Replace hardcoded `3000` with `process.env.PORT` and add `PORT` to `.env` example.
-
-File created: `README.md` in project root.

@@ -46,6 +46,7 @@ app.get("/login",async (req:Request,res:Response)=>{
 
 
 
+
 app.get("/redirecturl",getAccessToken);
 
 
@@ -54,7 +55,7 @@ app.get("/sync",syncTrdes);
 
 app.post("/logout",(req:Request,res:Response)=>{
     const userId = req.body.user_id; // we need to get the user_id from the request body 
-    const accessToken = getUserToken(userId);
+    const accessToken = String(getUserToken(userId));
     kc.invalidateAccessToken(accessToken);
     removeUserToken(userId);
     res.status(200).json({

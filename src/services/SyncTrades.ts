@@ -12,8 +12,9 @@ const syncTrdes =(req:Request,res:Response)=>{
         console.log(userId,brokerName);
         
         // get the access token from the body
-        const accessToken = getUserToken(userId);
+        const accessToken = String(getUserToken(userId));
 
+        console.log(accessToken);
         // if the user token is not there it will ask for login again 
         if (!accessToken) {
             res.redirect("/login");
@@ -27,7 +28,7 @@ const syncTrdes =(req:Request,res:Response)=>{
             
             // I am assuming that it will give an array 
             if (!trades.length) {
-                res.status(404).json({
+                return res.status(404).json({
                     message:"No traded found in your account",
                     status:"failed"
                 })
@@ -45,6 +46,8 @@ const syncTrdes =(req:Request,res:Response)=>{
                 status:"success",
                 trade:normaLizeTrdaes
             });
+        }).catch((error)=>{
+            console.log(error);
         });
 
     } catch (error) {
