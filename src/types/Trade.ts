@@ -6,6 +6,7 @@ export interface Trade {
   exchange:string;
   type: "BUY" | "SELL";
   timestamp: string;
+  orderDate:Date;
 }
 
 

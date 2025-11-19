@@ -10,6 +10,7 @@ export const tradeNormalizers: Record<string, (t: any) => Trade> = {
     exchange:String(t.exchange),
     type: (String(t.transaction_type).toUpperCase() === "SELL") ? "SELL" : "BUY",
     timestamp: String(t.order_timestamp),
+    orderDate:t.exchange_timestamp
   })
 
   // we can add many here 

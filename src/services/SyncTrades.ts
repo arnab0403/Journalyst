@@ -8,22 +8,31 @@ const syncTrdes =(req:Request,res:Response)=>{
     try {
 
         // get the values form the body 
-        const userId=req.body.user_id;
-        const brokerName = req.body.broker_name;
+        const userId=req.body?.user_id;
+        const brokerName = req.body?.broker_name;
+        
         console.log(userId,brokerName);
+
+        if (!brokerName || !userId) {
+           return res.status(500).json({
+                    message:"Broker name or user id is missing",
+                    status:"failed",
+                });
+        }
         
         // get the access token from the body
         const accessToken = String(getUserToken(userId));
-
         console.log(accessToken);
+
+
         // if the user token is not there it will ask for login again 
         if (!accessToken) {
-            res.redirect("/login");
+            return res.redirect("/login");
         }
 
         // if access token is there then it will set the access token in the adapter
         kc.setAccessToken(accessToken);
-
+        
         kc.getTrades().then((trades)=>{
             console.log(trades);
             
@@ -48,7 +57,10 @@ const syncTrdes =(req:Request,res:Response)=>{
                 trade:normaLizeTrdaes
             });
         }).catch((error)=>{
-            console.log(error);
+            return res.status(500).json({
+                    message:error.message,
+                    status:"failed",
+                });
         });
 
     } catch (error) {
