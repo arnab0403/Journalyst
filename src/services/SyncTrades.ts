@@ -26,7 +26,7 @@ const syncTrdes =(req:Request,res:Response)=>{
 
 
         // if the user token is not there it will ask for login again 
-        if (!accessToken) {
+        if (accessToken) {
             return res.redirect("/login");
         }
 
