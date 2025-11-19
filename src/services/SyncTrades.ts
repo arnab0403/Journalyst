@@ -1,7 +1,8 @@
 import {Response,Request} from "express";
 import { kc } from "../adapter/kiteConnect";
-import { tradeNormalizers } from "../utility/TradeDataNormalize";
+
 import { getUserToken } from "../utility/tokeStore";
+import { tradeNormalizers } from "../normalizer/TradeDataNormalize";
 
 const syncTrdes =(req:Request,res:Response)=>{
     try {
@@ -28,9 +29,9 @@ const syncTrdes =(req:Request,res:Response)=>{
             
             // I am assuming that it will give an array 
             if (!trades.length) {
-                return res.status(404).json({
+                return res.status(200).json({
                     message:"No traded found in your account",
-                    status:"failed"
+                    status:"success"
                 })
             }
 

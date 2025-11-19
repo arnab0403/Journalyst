@@ -9,7 +9,7 @@ export const tradeNormalizers: Record<string, (t: any) => Trade> = {
     price: Number(t.average_price),
     exchange:String(t.exchange),
     type: (String(t.transaction_type).toUpperCase() === "SELL") ? "SELL" : "BUY",
-    timestamp: new Date(t.order_timestamp).toISOString(),
+    timestamp: String(t.order_timestamp),
   })
 
   // we can add many here 
