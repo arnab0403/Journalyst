@@ -1,27 +1,5 @@
 # Journalyst
 
-This README explains the environment variables, run commands, and the project path structure for the Journalyst project.
-
-**Quick summary**
-- Runtime: Node.js + TypeScript
-- Dev runner: `nodemon` + `ts-node`
-- Build: `tsc` -> `dist`
-- Main entry (dev): `src/app.ts` (nodemon); production: `dist/app.js`
-
-**Required .env variables**
-Create a `.env` file in the project root with at least the following keys:
-
-```
-# Kite Connect credentials
-API_KEY=your_kite_api_key_here
-API_SECRET_KEY=your_kite_api_secret_here
-```
-
-Notes:
-- Both `API_KEY` and `API_SECRET_KEY` are read by `src/adapter/kiteConnect.ts`.
-- Put the `.env` file in the repository root (same level as `package.json`) so `dotenv.config()` in `src/app.ts` and other files will pick it up.
-# Journalyst
-
 This document describes the current broker-adapter architecture and how to run and configure the project.
 
 **1) Broker implementations (how many & keys required)**
