@@ -35,7 +35,6 @@ API_SECRET_KEY=your_kite_api_secret
 # Fyers
 FYERS_APP_ID=your_fyers_app_id
 FYERS_SECRET_KEY=your_fyers_secret
-FYERS_REDIRECT_URI=http://yourdomain.com/api/fyers/redirecturl
 
 ```
 
