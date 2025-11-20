@@ -1,10 +1,32 @@
 import {Request,Response} from "express";
 import { API_KEY, API_SECRET_KEY, kc } from "../adapter/kiteConnect";
-import { saveUserToken } from "../utility/tokeStore";
+import { removeUserToken, saveUserToken } from "../utility/tokeStore";
 import { getUserToken } from "../utility/tokeStore";
 import { tradeNormalizers } from "../normalizer/TradeDataNormalize";
 
 const apiSecret:String = API_SECRET_KEY;  
+
+export const zerodhaLogin = async (req:Request,res:Response)=>{
+
+
+    // by this we can scale it 
+    // const brokerName = req.body.brokerName;
+    // if (brokerName==="zerodha") {
+    //     const loginUrl = kc.getLoginURL();
+    // }
+    try {    
+        const loginUrl = kc.getLoginURL();
+        res.redirect(loginUrl);
+        res.status(200);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message:"Internal server error",
+            status:"failed"
+        });
+    }
+
+}
 
 export const getAccessToken = (req:Request,res:Response)=>{     
 
@@ -42,9 +64,6 @@ export const getAccessToken = (req:Request,res:Response)=>{
     });
 
 }
-
-
-
 
 export const syncTrdes =async (req:Request,res:Response)=>{
     try {
@@ -113,4 +132,15 @@ export const syncTrdes =async (req:Request,res:Response)=>{
         })
         console.log(error)
     }
+}
+
+export const logout = (req:Request,res:Response)=>{
+    const userId = req.body.user_id; // we need to get the user_id from the request body 
+    const accessToken = String(getUserToken(userId));
+    kc.invalidateAccessToken(accessToken);
+    removeUserToken(userId);
+    res.status(200).json({
+        message:"User logout successfully",
+        status:"success"
+    })
 }

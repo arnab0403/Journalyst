@@ -1,9 +1,5 @@
 import { Trade } from "../types/Trade";
 
-
-
-
-
 export const tradeNormalizers: Record<string, (t: any) => Trade> = {
   zerodha: (t: any) => ({
     id: String(t.trade_id),
