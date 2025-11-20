@@ -111,25 +111,6 @@ Adjust the base path according to how you mount routers in `src/app.ts` (current
 └─ dist/
 ```
 
-Suggested structure for maintainability:
-
-```
-src/
-├─ adapters/
-│  ├─ base.ts             # adapter interface
-│  ├─ zerodha.ts          # kite adapter (factory)
-│  └─ fyers.ts            # fyers adapter (factory)
-├─ services/
-│  ├─ auth.service.ts
-│  └─ trades.service.ts
-├─ routes/
-├─ normalizers/
-├─ storage/
-│  └─ tokenStore.ts       # redis/db backed store
-├─ config/
-│  └─ index.ts            # read and validate env vars
-└─ types/
-```
 
 **6) Available commands**
 - `npm install` — install dependencies
@@ -146,14 +127,4 @@ npm run dev
 ```
 
 -------------------------------------------------
-
-Checklist & immediate improvements you should apply
-- Replace in-memory `tokeStore` with a normalized token store API (`getUserToken(userId): string | undefined`). Rename file to `tokenStore.ts`.
-- Stop mutating singleton adapter instances; instead use adapter factories that create per-user clients (avoid `setAccessToken` on a shared instance).
-- Move hard-coded secrets into `.env` and add `.env.example`.
-- Centralize config in `src/config/index.ts` and validate required variables at startup.
-- Mount routers in `src/app.ts` under `/api/<broker>` for clearer routing.
-
-If you want, I can implement the low-risk changes now: add `.env.example`, fix `tokeStore` to `tokenStore` API, and update `src/app.ts` to mount the routers under `/api` and use `PORT` from env. Tell me which changes you'd like me to make and I'll apply them and commit the changes.
-
 
