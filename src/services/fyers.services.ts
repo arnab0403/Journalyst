@@ -127,70 +127,70 @@ export const getDailyOrders=async(req:Request,res:Response)=>{
     }
 }
 
-// export const placeOrder = async(req:Request,res:Response)=>{
-//     try {
-//         const access_token = req.body.access_token;
+export const placeOrder = async(req:Request,res:Response)=>{
+    try {
+        const access_token = req.body.access_token;
         
-//         // setting the access token before any call
-//         await fyers.setAccessToken(access_token);   
+        // setting the access token before any call
+        await fyers.setAccessToken(access_token);   
 
-//         const reqBody={ 
-//             "symbol": "NSE:TEXINFRA-EQ", 
-//             "qty": 1, 
-//             "type": 2, 
-//             "side": 1, 
-//             "productType": "INTRADAY", 
-//             "limitPrice": 0, 
-//             "stopPrice": 0, 
-//             "validity": "DAY", 
-//             "stopLoss": 0, 
-//             "takeProfit": 0, 
-//             "offlineOrder": false, 
-//             "disclosedQty": 0 
-//         }
+        const reqBody={ 
+            "symbol": "NSE:TEXINFRA-EQ", 
+            "qty": 1, 
+            "type": 2, 
+            "side": 1, 
+            "productType": "INTRADAY", 
+            "limitPrice": 0, 
+            "stopPrice": 0, 
+            "validity": "DAY", 
+            "stopLoss": 0, 
+            "takeProfit": 0, 
+            "offlineOrder": false, 
+            "disclosedQty": 0 
+        }
 
-//         const response = await fyers.place_order(reqBody);
-//         console.log(response);
-//         res.status(200).json({
-//             message:"order successful",
-//             status:"success",
-//             data:response
-//         });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({
-//             message:"Internal server error",
-//             status:"failed",
-//         })
-//     }
-// }
+        const response = await fyers.place_order(reqBody);
+        console.log(response);
+        res.status(200).json({
+            message:"order successful",
+            status:"success",
+            data:response
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message:"Internal server error",
+            status:"failed",
+        })
+    }
+}
 
 
-// export const closeOrder = async(req:Request,res:Response)=>{
-//     try {
-//         const access_token = req.body.access_token;
+export const closeOrder = async(req:Request,res:Response)=>{
+    try {
+        const access_token = req.body.access_token;
         
-//         // setting the access token before any call
-//         await fyers.setAccessToken(access_token);   
+        // setting the access token before any call
+        await fyers.setAccessToken(access_token);   
 
-//         const reqBody={
-//             "id":"NSE:SBIN-EQ-INTRADAY"
-//         }
+        const reqBody={
+            "id":"NSE:SBIN-EQ-INTRADAY"
+        }
 
-//         const response = await fyers.exit_position(reqBody);
-//         console.log(response);
+        const response = await fyers.exit_position(reqBody);
+        console.log(response);
 
-//         res.status(200).json({
-//             message:"order successful",
-//             status:"success",
-//             data:response
-//         });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({
-//             message:"Internal server error",
-//             status:"failed",
-//         })
-//     }
-// }
+        res.status(200).json({
+            message:"order successful",
+            status:"success",
+            data:response
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message:"Internal server error",
+            status:"failed",
+        })
+    }
+}
 
