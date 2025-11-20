@@ -1,8 +1,10 @@
 import { tradeNormalizers } from "../normalizer/TradeDataNormalize";
-import fyers from "../adapter/fyersConnect";
+import fyers, { FYERS_APP_APP_ID, FYERS_APP_SECRECT_KEY } from "../adapter/fyersConnect";
 import { Response,Request } from "express";
 import { getUserToken, saveUserToken } from "../utility/tokeStore";
+import dotenv from "dotenv"
 
+dotenv.config();
 
 
 // getting the authcode by redirecting to fyers url 
@@ -28,8 +30,8 @@ export function getAuthCode(req:Request,res:Response){
 export const setAccessToken =async (req:Request,res:Response)=>{
     try {
         const authCode=req.query.auth_code;
-
-        const response = await fyers.generate_access_token({"client_id":"0J8KB7A8QA-100","secret_key":"18U0T03IKE","auth_code":authCode})
+        
+        const response = await fyers.generate_access_token({"client_id":FYERS_APP_APP_ID,"secret_key":FYERS_APP_SECRECT_KEY,"auth_code":authCode})
         console.log("response line38",response);
         const access_token = response.access_token;
         
