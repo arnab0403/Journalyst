@@ -6,7 +6,7 @@ import dotenv from "dotenv"
 
 dotenv.config();
 
-
+// middleware for getting the user token
 export const validateUserMiddleware=(req:Request,res:Response,next:NextFunction)=>{
     try {
         // geting the user id and broker name
@@ -47,6 +47,8 @@ export const validateUserMiddleware=(req:Request,res:Response,next:NextFunction)
     }
 }
 
+
+
 // getting the authcode by redirecting to fyers url 
 export function getAuthCode(req:Request,res:Response){
     try{
@@ -64,8 +66,8 @@ export function getAuthCode(req:Request,res:Response){
         })
         console.log(error);
     }
-
 }
+
 
 
 // setting the auth code 
@@ -97,6 +99,9 @@ export const setAccessToken =async (req:Request,res:Response)=>{
     }
 }
 
+
+
+// get daily orders
 export const getDailyOrders=async(req:Request,res:Response)=>{
     try {
         const access_token = req.body.access_token;
@@ -127,6 +132,9 @@ export const getDailyOrders=async(req:Request,res:Response)=>{
     }
 }
 
+
+
+// place order
 export const placeOrder = async(req:Request,res:Response)=>{
     try {
         const access_token = req.body.access_token;
@@ -176,6 +184,8 @@ export const placeOrder = async(req:Request,res:Response)=>{
 }
 
 
+
+// close orders
 export const closeOrder = async(req:Request,res:Response)=>{
     try {
         const access_token = req.body.access_token;
