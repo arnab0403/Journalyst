@@ -130,12 +130,22 @@ export const getDailyOrders=async(req:Request,res:Response)=>{
 export const placeOrder = async(req:Request,res:Response)=>{
     try {
         const access_token = req.body.access_token;
+        const stock_name = req.body.stock_name;
+
+        console.log(stock_name);
         
+        if (!stock_name) {
+            return res.status(400).json({
+                message:"Please provide the stock name",
+                status:"failed"
+            })
+        }
+
         // setting the access token before any call
         await fyers.setAccessToken(access_token);   
 
         const reqBody={ 
-            "symbol": "NSE:TEXINFRA-EQ", 
+            "symbol": `NSE:${stock_name}-EQ`, 
             "qty": 1, 
             "type": 2, 
             "side": 1, 
@@ -169,12 +179,22 @@ export const placeOrder = async(req:Request,res:Response)=>{
 export const closeOrder = async(req:Request,res:Response)=>{
     try {
         const access_token = req.body.access_token;
+        const stock_name = req.body.stock_name;
+
+        console.log(stock_name);
+        
+        if (!stock_name) {
+            return res.status(400).json({
+                message:"Please provide the stock name",
+                status:"failed"
+            })
+        }
         
         // setting the access token before any call
         await fyers.setAccessToken(access_token);   
 
         const reqBody={
-            "id":"NSE:SBIN-EQ-INTRADAY"
+            "id":`NSE:${stock_name}-EQ-INTRADAY` // we can get this from user
         }
 
         const response = await fyers.exit_position(reqBody);
@@ -185,6 +205,7 @@ export const closeOrder = async(req:Request,res:Response)=>{
             status:"success",
             data:response
         });
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
