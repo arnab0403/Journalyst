@@ -1,7 +1,8 @@
 const tokenStore: Record<string, { accessToken: string}> = {};
 
 export function getUserToken(userId: string) {
-  console.log(tokenStore[userId]);
+  console.log(tokenStore)
+  console.log("user token",tokenStore[userId]);
   return tokenStore[userId];
 }
 

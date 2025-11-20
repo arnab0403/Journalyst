@@ -1,10 +1,13 @@
 import express,{Response,Request, application} from "express";
 import dotenv from "dotenv";
-
+//@ts-ignore
+import cors from "cors";
 import { API_KEY, API_SECRET_KEY, kc } from "./adapter/kiteConnect";
-import syncTrdes from "./services/SyncTrades";
-import getAccessToken from "./services/GetAccessToken";
 import { getUserToken, removeUserToken } from "./utility/tokeStore";
+import { getAuthCode,setAccessToken } from "./services/fyers.services";
+import { syncTrdes,getAccessToken } from "./services/zerodha.services";
+import fyers from "./adapter/fyersConnect";
+import fyersRouter from "./routes/FyersRouter";
 
 
 dotenv.config();
@@ -13,12 +16,7 @@ dotenv.config();
 
 const app = express();
 
-
-const apiKey:String = API_KEY;
-const apiSecret:String = API_SECRET_KEY;  
-
-
-
+app.use(cors());
 
 app.use(express.json()); 
 
@@ -51,6 +49,12 @@ app.get("/redirecturl",getAccessToken);
 
 
 app.get("/sync",syncTrdes);
+
+
+// fyers implementation 
+
+app.use("/api/fyers/",fyersRouter);
+
 
 
 app.post("/logout",(req:Request,res:Response)=>{

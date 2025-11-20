@@ -1,10 +1,52 @@
-import {Response,Request} from "express";
-import { kc } from "../adapter/kiteConnect";
-
+import {Request,Response} from "express";
+import { API_KEY, API_SECRET_KEY, kc } from "../adapter/kiteConnect";
+import { saveUserToken } from "../utility/tokeStore";
 import { getUserToken } from "../utility/tokeStore";
 import { tradeNormalizers } from "../normalizer/TradeDataNormalize";
 
-const syncTrdes =(req:Request,res:Response)=>{
+const apiSecret:String = API_SECRET_KEY;  
+
+export const getAccessToken = (req:Request,res:Response)=>{     
+
+    const request_token = req.query.request_token;
+    console.log(request_token);
+
+    if (!request_token) {
+        return res.status(404).json({
+            message:"Request token not found",
+            status:"failed"
+        });
+    }
+
+    // generating the session 
+    kc.generateSession(request_token as string,apiSecret as string)
+    .then(async(session)=>{
+        console.log(session);
+        const accessToken = session.access_token;
+        const userId = session.user_id;
+        console.log(accessToken,userId);
+        // save the user id and access_token in the for future api calls 
+        saveUserToken(userId,accessToken); 
+        
+        kc.setAccessToken(accessToken);
+        try{
+            const profile = await kc.getProfile();
+            console.log(profile);
+            res.status(200).json({
+                message:"User logged in successfully and request token genarated",
+                status:"success"
+            })
+        }catch(error){
+            console.log((error as Error).message);
+        }
+    });
+
+}
+
+
+
+
+export const syncTrdes =async (req:Request,res:Response)=>{
     try {
 
         // get the values form the body 
@@ -26,13 +68,13 @@ const syncTrdes =(req:Request,res:Response)=>{
 
 
         // if the user token is not there it will ask for login again 
-        if (accessToken) {
+        if (!accessToken) {
             return res.redirect("/login");
         }
 
         // if access token is there then it will set the access token in the adapter
-        kc.setAccessToken(accessToken);
-        
+        const access=await kc.setAccessToken(accessToken);
+        console.log(access);
         kc.getTrades().then((trades)=>{
             console.log(trades);
             
@@ -46,6 +88,7 @@ const syncTrdes =(req:Request,res:Response)=>{
 
             // geting the normalizer
             const normalizer = tradeNormalizers[brokerName];
+            tradeNormalizers.zerodha;
 
             // normalizing the data
             const normaLizeTrdaes=trades.map(k=>normalizer(k));
@@ -71,5 +114,3 @@ const syncTrdes =(req:Request,res:Response)=>{
         console.log(error)
     }
 }
-
-export default syncTrdes;
