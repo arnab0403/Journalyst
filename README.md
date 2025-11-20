@@ -59,9 +59,6 @@ FYERS_APP_ID=your_fyers_app_id
 FYERS_SECRET_KEY=your_fyers_secret
 FYERS_REDIRECT_URI=http://yourdomain.com/api/fyers/redirecturl
 
-# Common
-PORT=3000
-NODE_ENV=development
 ```
 
 Notes:
