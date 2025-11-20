@@ -4,18 +4,18 @@ This document describes the current broker-adapter architecture and how to run a
 
 **1) Broker implementations (how many & keys required)**
 - Zerodha (Kite Connect)
-  - SDK/adapter: `src/adapter/kiteConnect.ts` (uses `kiteconnect` package).
+  - adapter: `src/adapter/kiteConnect.ts` (uses `kiteconnect` package).
   - Required env variables: `API_KEY`, `API_SECRET_KEY` (place in `.env`).
   - Flow: user is redirected to Kite login, Kite calls back to the redirect URL with `request_token`, server exchanges it for `access_token` and saves the token for the user.
 
 - Fyers
-  - SDK/adapter: `src/adapter/fyersConnect.ts` (uses `fyers-api-v3`).
+  - adapter: `src/adapter/fyersConnect.ts` (uses `fyers-api-v3`).
   - Required env variables (recommended): `FYERS_APP_ID`, `FYERS_SECRET_KEY`, `FYERS_REDIRECT_URI`.
   - Note: the repo currently contains hard-coded Fyers values in `src/services/fyers.services.ts` — move them to `.env` for security.
 
 If you add another broker, create an adapter under `src/adapter` and a service under `src/services`, plus a normalizer entry.
 
-**2) Modules / major files**
+**2) major files**
 - `src/app.ts` — Express application entrypoint and server bootstrap.
 - `src/adapter/` — Broker adapters (Kite, Fyers). They configure SDKs and export client instances or factories.
 - `src/routes/` — Express routers per broker (`ZerodhaRouter.ts`, `FyersRouter.ts`).
