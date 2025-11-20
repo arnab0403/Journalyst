@@ -92,37 +92,29 @@ export const syncTrdes =async (req:Request,res:Response)=>{
         }
 
         // if access token is there then it will set the access token in the adapter
-        const access=await kc.setAccessToken(accessToken);
-        console.log(access);
-        kc.getTrades().then((trades)=>{
-            console.log(trades);
+        kc.setAccessToken(accessToken);
+        const orders = await kc.getTrades();
             
-            // I am assuming that it will give an array 
-            if (!trades.length) {
-                return res.status(200).json({
-                    message:"No traded found in your account",
-                    status:"success"
-                })
-            }
+        // if no order is there
+        if (!orders.length) {
+            return res.status(200).json({
+                message:"No traded found in your account",
+                status:"success"
+            })
+        }
 
-            // geting the normalizer
-            const normalizer = tradeNormalizers[brokerName];
-            tradeNormalizers.zerodha;
+        // geting the normalizer
+        const normalizer = tradeNormalizers[brokerName];
+        tradeNormalizers.zerodha;
 
-            // normalizing the data
-            const normaLizeTrdaes=trades.map(k=>normalizer(k));
+        // normalizing the data
+        const normaLizeTrdaes=orders.map(k=>normalizer(k));
 
-            // sending the data
-            res.status(200).json({
-                message:"Successfully fetched your trades",
-                status:"success",
-                trade:normaLizeTrdaes
-            });
-        }).catch((error)=>{
-            return res.status(500).json({
-                    message:error.message,
-                    status:"failed",
-                });
+        // sending the data
+        res.status(200).json({
+            message:"Successfully fetched your trades",
+            status:"success",
+            trade:normaLizeTrdaes
         });
 
     } catch (error) {

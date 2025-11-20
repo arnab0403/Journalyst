@@ -9,17 +9,17 @@ export const tradeNormalizers: Record<string, (t: any) => Trade> = {
     exchange:String(t.exchange),
     type: (String(t.transaction_type).toUpperCase() === "SELL") ? "SELL" : "BUY",
     timestamp: String(t.order_timestamp),
-    orderDate:t.exchange_timestamp
+    orderDate:t.exchange_timestamp.toISOString().split("T")[0]
   }),
   fyers:(t:any)=>({
     id: String(t.id),
-    symbol: String(t.symbol),
+    symbol: String(t.symbol.split(":")[1]),
     quantity: Number(t.qty),
     price: Number(t.tradedPrice),
-    exchange:String(t.exchange),
+    exchange:String(t.symbol.split(":")[0]),
     type: (t.side === 1) ? "BUY" : "SELL",
     timestamp: String((t.orderDateTime.split(" ")[1])),
-    orderDate:t.orderDateTime.split(" ")[0]
+    orderDate:new Date(t.orderDateTime).toISOString().split("T")[0]
   })
 
   // we can add many here 

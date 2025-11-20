@@ -11,15 +11,17 @@ dotenv.config();
 export function getAuthCode(req:Request,res:Response){
     try{
     
-        fyers.setAppId("0J8KB7A8QA-100");
+        fyers.setAppId(FYERS_APP_APP_ID);
 
         fyers.setRedirectUrl("http://192.168.0.245:3000/api/fyers/redirecturl");
-        console.log("Hi");
-        const URL=fyers.generateAuthCode()
-        console.log(URL);
+        const URL=fyers.generateAuthCode();
 
         res.redirect(URL);
     }catch(error){
+        res.status(500).json({
+            message:"Internal server error",
+            status:"failed"
+        })
         console.log(error);
     }
 
@@ -30,14 +32,14 @@ export function getAuthCode(req:Request,res:Response){
 export const setAccessToken =async (req:Request,res:Response)=>{
     try {
         const authCode=req.query.auth_code;
-        
+
+        // genarating the access token
         const response = await fyers.generate_access_token({"client_id":FYERS_APP_APP_ID,"secret_key":FYERS_APP_SECRECT_KEY,"auth_code":authCode})
-        console.log("response line38",response);
         const access_token = response.access_token;
         
         fyers.setAccessToken(response.access_token);
 
-
+        // getting the profile for user_id -> to map the token and user id 
         const profile = await fyers.get_profile();
         console.log("profile line40",profile);
         const userId = profile.data.fy_id;
@@ -45,7 +47,6 @@ export const setAccessToken =async (req:Request,res:Response)=>{
         // saving the token in storage
         saveUserToken(userId,access_token);
 
-  
     
         res.status(200).json({
             message:"Auth code genarated successfully now you can use any functionality",
@@ -62,9 +63,16 @@ export const getDailyOrders=async(req:Request,res:Response)=>{
         // geting the user id and broker name
         const userId=req.body?.user_id;
         const brokerName = req.body?.broker_name;
-        
-        console.log(`from body ${userId}`,brokerName);
 
+        // edge cases
+        if (!brokerName || !userId) {
+            return res.status(400).json({
+                message:"Broker name or user id is missing",
+                status:"failed"
+            })
+        }
+        
+        // edge cases
         if (brokerName!=="fyers") {
             return res.status(400).json({
                 message:"Wrong broker name",
@@ -74,24 +82,33 @@ export const getDailyOrders=async(req:Request,res:Response)=>{
 
         const access_token = getUserToken(userId);
         
+        // edge cases
         if (!access_token) {
             return res.redirect("/api/fyers/login");
         }
 
-        console.log(access_token);
+        // setting the access token before any call
         await fyers.setAccessToken(access_token);   
-        
+
+        // getting the orders
         const order = await fyers.get_orders();
         const oders = order.orderBook;
+
+        // getting the normalizer & maping it
         const fyersNormalizer=tradeNormalizers["fyers"];
         const normalizeOrders = oders.map((o:any)=>fyersNormalizer(o));
-         
+        
+
         res.status(200).json({
             message:"Current day orders",
             status:"success",
             order:normalizeOrders
         })
     } catch (error) {
-        console.log(error);   
+        console.log(error);
+        res.status(500).json({
+            message:"Internal server error",
+            status:"failed",
+        })
     }
 }
