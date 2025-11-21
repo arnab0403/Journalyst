@@ -59,11 +59,9 @@ The project exposes a small set of broker-specific endpoints. Depending on wheth
 Adjust the base path according to how you mount routers in `src/app.ts` (current `src/app.ts` may contain direct routes; prefer mounting routers under `/api/<broker>` for clarity).
 
 
-Interactive Brokers (IB) endpoints added
-- The project now includes an Interactive Brokers integration under `src/routes/IBRoutes.ts` and `src/services/ib.services.ts`.
-- Base mount (in `src/app.ts`): `app.use("/api/ib", iBrouter);`
-
-New IB endpoints:
+-Interactive Brokers (IB) 
+  - The project now includes an Interactive Brokers integration under `src/routes/IBRoutes.ts` and `src/services/ib.services.ts`.
+  - Base mount (in `src/app.ts`): `app.use("/api/ib", iBrouter);`
   - `GET /api/ib/placeorder` — Place a dummy market order on the connected IB account.
     - Body: `{ "action": "BUY"|"SELL", "symbol": "TICKER", "quantity": 10 }`
     - Behavior: connects to IB gateway, requests a valid order id, places the order, waits for a Filled status, and returns order status.
