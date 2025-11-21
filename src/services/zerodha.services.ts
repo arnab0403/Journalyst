@@ -1,5 +1,5 @@
 import {Request,Response} from "express";
-import { API_KEY, API_SECRET_KEY, kc } from "../adapter/kiteConnect";
+import { API_SECRET_KEY, kc } from "../adapter/kiteConnect";
 import { removeUserToken, saveUserToken } from "../utility/tokeStore";
 import { getUserToken } from "../utility/tokeStore";
 import { tradeNormalizers } from "../normalizer/TradeDataNormalize";

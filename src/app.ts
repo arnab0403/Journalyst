@@ -1,4 +1,4 @@
-import express,{Response,Request, application} from "express";
+import express from "express";
 import dotenv from "dotenv";
 import fyersRouter from "./routes/FyersRouter";
 import zerodhaRouter from "./routes/ZerodhaRouter";
