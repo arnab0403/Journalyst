@@ -1,4 +1,5 @@
 import { Trade } from "../types/Trade";
+import { formatOrderDate } from "../utility/dateFormatter";
 
 export const tradeNormalizers: Record<string, (t: any) => Trade> = {
   zerodha: (t: any) => ({
@@ -20,7 +21,6 @@ export const tradeNormalizers: Record<string, (t: any) => Trade> = {
     type: (t.side === 1) ? "BUY" : "SELL",
     timestamp: String((t.orderDateTime.split(" ")[1])),
     orderDate:new Date(t.orderDateTime).toISOString().split("T")[0]
-  })
-
+  }),
   // we can add many here 
 };
