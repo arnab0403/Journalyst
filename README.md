@@ -87,21 +87,25 @@ Notes on IB integration:
 ├─ .env (should be in .gitignore)
 ├─ src/
 │  ├─ app.ts
-  │  ├─ adapter/
-  │  │  ├─ kiteConnect.ts
-  │  │  └─ fyersConnect.ts
-  │  ├─ routes/
-  │  │  ├─ ZerodhaRouter.ts
-  │  │  └─ FyersRouter.ts
-  │  ├─ services/
-  │  │  ├─ zerodha.services.ts
-  │  │  └─ fyers.services.ts
-  │  ├─ normalizer/
-  │  │  └─ TradeDataNormalize.ts
-  │  ├─ utility/
-  │  │  └─ tokeStore.ts
-  │  └─ types/
-  │     └─ Trade.ts
+│  ├─ global.d.ts
+│  ├─ adapter/
+│  │  ├─ kiteConnect.ts
+│  │  ├─ fyersConnect.ts
+│  │  └─ ibConnect.ts
+│  ├─ routes/
+│  │  ├─ ZerodhaRouter.ts
+│  │  ├─ FyersRouter.ts
+│  │  └─ IBRoutes.ts
+│  ├─ services/
+│  │  ├─ zerodha.services.ts
+│  │  ├─ fyers.services.ts
+│  │  └─ ib.services.ts
+│  ├─ normalizer/
+│  │  └─ TradeDataNormalize.ts
+│  ├─ utility/
+│  │  └─ tokeStore.ts
+│  └─ types/
+│     └─ Trade.ts
 └─ dist/
 ```
 
