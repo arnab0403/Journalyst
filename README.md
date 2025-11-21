@@ -58,6 +58,31 @@ The project exposes a small set of broker-specific endpoints. Depending on wheth
 
 Adjust the base path according to how you mount routers in `src/app.ts` (current `src/app.ts` may contain direct routes; prefer mounting routers under `/api/<broker>` for clarity).
 
+---
+
+Interactive Brokers (IB) endpoints added
+- The project now includes an Interactive Brokers integration under `src/routes/IBRoutes.ts` and `src/services/ib.services.ts`.
+- Base mount (in `src/app.ts`): `app.use("/api/ib", iBrouter);`
+
+New IB endpoints:
+  - `GET /api/ib/placeorder` — Place a dummy market order on the connected IB account.
+    - Body: `{ "action": "BUY"|"SELL", "symbol": "TICKER", "quantity": 10 }`
+    - Behavior: connects to IB gateway, requests a valid order id, places the order, waits for a Filled status, and returns order status.
+
+  - `GET /api/ib/currentorders` — Fetch current open positions/orders for the connected account.
+    - Body: none required (but you may include identifying info if you add auth later).
+    - Behavior: connects to IB Gateway, requests positions, and returns them normalized to the app `Trade` shape.
+
+  - `GET /api/ib/history` — Fetch historical executions (trade history) from IB.
+    - Body: none required (the service uses an execution filter that can be customized).
+    - Behavior: connects to IB Gateway, requests executions via `reqExecutions`, and returns normalized executed trades.
+
+Notes on IB integration:
+- The IB code uses the `@stoqey/ib` package and an adapter at `src/adapter/ibConnect` (see project for connection and credential handling).
+- The IB services currently connect/disconnect per request and use events (`EventName.*`) to collect positions/executions; this is suitable for simple flows but consider connection pooling for production.
+- The example uses a demo/dummy account (`account: "DUN983795"` is present in code) — replace with a configurable env var and secure storage before using a real account.
+
+
 **5) Folder structure (current)**
 
 ```
