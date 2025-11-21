@@ -56,7 +56,6 @@ The project exposes a small set of broker-specific endpoints. Depending on wheth
   - `GET /api/fyers/redirecturl` — Fyers callback; expects `auth_code` query param.
   - `GET /api/fyers/orders` — Get daily orders. Expects JSON body: `{ "user_id": "<id>", "broker_name": "fyers" }`.
 
-Adjust the base path according to how you mount routers in `src/app.ts` (current `src/app.ts` may contain direct routes; prefer mounting routers under `/api/<broker>` for clarity).
 
 
 - Interactive Brokers (IB) 
