@@ -2,84 +2,90 @@
 import { EventName, Contract,Execution ,ExecutionFilter,OrderType,OrderAction,SecType,Order} from "@stoqey/ib";
 import { Request, Response } from "express";
 import { Trade } from "../types/Trade";
-import ib from "../adapter/ibConnect";
-
+import IB from "../adapter/ibConnect";
 
 
 export const placeIbOrder = (req: Request, res: Response) => {
-  const { action, symbol, quantity } = req.body;
-
-  if (!action || !symbol || !quantity) {
-    return res.status(400).json({
-      message: "Please check all the details before submitting the request",
-      status: "failed",
+    const ib = new IB({
+        port: 4002,
+        clientId: 0,
     });
-  }
+    const { action, symbol, quantity } = req.body;
 
-  console.log("Starting IB connection...");
-
-  let orderResponseSent = false;
-  let currentOrderId: number;
-
-  ib.once(EventName.nextValidId, (orderId: number) => {
-    currentOrderId = orderId;
-
-    const contract: Contract = {
-      symbol: symbol,
-      secType: SecType.STK,
-      exchange: "NSE",
-      currency: "INR",
-    };
-
-    const order: Order = {
-      orderType: OrderType.MKT,
-      action: action === "BUY" ? OrderAction.BUY : OrderAction.SELL,
-      orderId,
-      totalQuantity: quantity,
-      account: "DUN983795",
-      transmit: true,
-    };
-
-    ib.placeOrder(orderId, contract, order);
-    console.log("Order submitted, waiting for execution...");
-  });
-
-  ib.on(EventName.orderStatus, (orderId, status) => {
-    console.log(`Order #${orderId} status: ${status}`);
-
-    // Only send response once
-    if (!orderResponseSent && orderId === currentOrderId && status === "Filled") {
-      orderResponseSent = true;
-      ib.disconnect();
-      return res.status(200).json({
-        message: "Order successfully placed",
-        status: "success",
-        orderId,
-        state: status,
-      });
-    }
-  });
-
-  ib.on(EventName.error, (id, code, msg) => {
-    console.error(`IB Error (${code}) -> ${msg}`);
-
-    if (!orderResponseSent && Number(code) !== 10349) {
-      orderResponseSent = true;
-      ib.disconnect();
-      return res.status(500).json({
-        message: "Trade failed, please check the details",
+    if (!action || !symbol || !quantity) {
+        return res.status(400).json({
+        message: "Please check all the details before submitting the request",
         status: "failed",
-      });
+        });
     }
-  });
 
-  ib.connect();
-  ib.reqIds();
+    console.log("Starting IB connection...");
+
+    let orderResponseSent = false;
+    let currentOrderId: number;
+
+    ib.once(EventName.nextValidId, (orderId: number) => {
+        currentOrderId = orderId;
+
+        const contract: Contract = {
+        symbol: symbol,
+        secType: SecType.STK,
+        exchange: "NSE",
+        currency: "INR",
+        };
+
+        const order: Order = {
+        orderType: OrderType.MKT,
+        action: action === "BUY" ? OrderAction.BUY : OrderAction.SELL,
+        orderId,
+        totalQuantity: quantity,
+        account: "DUN983795",
+        transmit: true,
+        };
+
+        ib.placeOrder(orderId, contract, order);
+        console.log("Order submitted, waiting for execution...");
+    });
+
+    ib.on(EventName.orderStatus, (orderId, status) => {
+        console.log(`Order #${orderId} status: ${status}`);
+
+        // Only send response once
+        if (!orderResponseSent && orderId === currentOrderId && status === "Filled") {
+        orderResponseSent = true;
+        ib.disconnect();
+        return res.status(200).json({
+            message: "Order successfully placed",
+            status: "success",
+            orderId,
+            state: status,
+        });
+        }
+    });
+
+    ib.on(EventName.error, (id, code, msg) => {
+        console.error(`IB Error (${code}) -> ${msg}`);
+
+        if (!orderResponseSent && Number(code) !== 10349) {
+        orderResponseSent = true;
+        ib.disconnect();
+        return res.status(500).json({
+            message: "Trade failed, please check the details",
+            status: "failed",
+        });
+        }
+    });
+
+    ib.connect();
+    ib.reqIds();
 };
 
 
 export const getCurrentOrders = (req: Request, res: Response) => {
-   
+    const ib = new IB({
+        port: 4002,
+        clientId: 0,
+    });
 
     const trades: Trade[] = [];
 
@@ -110,24 +116,24 @@ export const getCurrentOrders = (req: Request, res: Response) => {
     // When all positions are sent
     ib.once(EventName.positionEnd, () => {
         console.log("All positions received.");
-        res.status(200).json({
+        ib.disconnect();
+        return res.status(200).json({
         message: "All orders fetched",
         status: "success",
         orders: trades,
         });
 
-        ib.disconnect();
     });
 
     // Error logging
     ib.on(EventName.error, (err) => {
         console.error("IB ERROR:", err);
-        res.status(500).json({
+        ib.disconnect();
+        return res.status(500).json({
         message: "IB Connection Error",
         error: err.message || err,
         status: "failed",
         });
-        ib.disconnect();
     });
 
     // Start connection
@@ -137,8 +143,11 @@ export const getCurrentOrders = (req: Request, res: Response) => {
 
 
 export const orderHistory = (req: Request, res: Response) => {
+    const ib = new IB({
+        port: 4002,
+        clientId: 0,
+    });
     const trades: Trade[] = [];
-
     // Connect to IB
     ib.on(EventName.connected, () => {
 
