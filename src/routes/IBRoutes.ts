@@ -13,7 +13,7 @@ const iBrouter = Router();
 // iBrouter.get("/history",orderHistory);
 
 
-iBrouter.get("/placeorder", placeIbOrder);
+iBrouter.post("/placeorder", placeIbOrder);
 iBrouter.get("/currentorders",getCurrentOrders);
 iBrouter.get("/history",orderHistory);
 
