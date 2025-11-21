@@ -4,6 +4,8 @@ import fyersRouter from "./routes/FyersRouter";
 import zerodhaRouter from "./routes/ZerodhaRouter";
 //@ts-ignore
 import cors from "cors";
+import iBrouter from "./routes/IBRoutes";
+
 
 dotenv.config();
 const app = express();
@@ -15,6 +17,8 @@ app.use(express.json());
 
 app.use("/api/zerodha/",zerodhaRouter);
 app.use("/api/fyers/",fyersRouter);
+app.use("/api/ib", iBrouter);
+
 
 
 app.listen(3000,()=>{
